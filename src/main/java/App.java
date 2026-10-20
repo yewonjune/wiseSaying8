@@ -19,6 +19,12 @@ public class App {
                 actionWrite();
             } else if (command.equals("목록")) {
                 actionList();
+            } else if (command.startsWith("삭제?id=")) {
+                int targetId = Integer.parseInt(command.substring(6));
+                actionDelete(targetId);
+            } else if (command.startsWith("수정?id=")) {
+                int targetId = Integer.parseInt(command.substring(6));
+                actionEdit(targetId);
             } else if (command.equals("종료")) {
                 break;
             }
@@ -26,6 +32,49 @@ public class App {
 
         sc.close();
     }
+
+    WiseSaying findById(int targetId) {
+        for(WiseSaying wiseSaying : wiseSayings) {
+            if(wiseSaying.getId() == targetId) {
+                return wiseSaying;
+            }
+        }
+
+        return null;
+    }
+
+    private void actionEdit(int targetId) {
+        WiseSaying wiseSaying = findById(targetId);
+
+        if(wiseSaying==null) {
+            System.out.println(targetId + "번 명언은 존재하지 않습니다.");
+            return;
+        }
+
+        System.out.println("명언(기존): "+ wiseSaying.getContent());
+        System.out.print("명언: ");
+        String content = sc.nextLine();
+
+        System.out.println("작가(기존): "+ wiseSaying.getAuthor());
+        System.out.print("작가: ");
+        String author = sc.nextLine();
+
+        wiseSaying.setContent(content);
+        wiseSaying.setAuthor(author);
+    }
+
+    private void actionDelete(int targetId) {
+        WiseSaying wiseSaying = findById(targetId);
+
+        if(wiseSaying==null) {
+            System.out.println(targetId + "번 명언은 존재하지 않습니다.");
+            return;
+        }
+
+        wiseSayings.remove(wiseSaying);
+        System.out.println(targetId + "번 명언이 삭제되었습니다.");
+    }
+
     int getSize() {
         return wiseSayings.size();
     }
@@ -50,7 +99,7 @@ public class App {
         WiseSaying[] forListWiseSaying = findForList();
         for(WiseSaying wiseSaying : forListWiseSaying )
         {
-            System.out.println(wiseSaying.id + "/" + wiseSaying.author + "/" + wiseSaying.content);
+            System.out.println(wiseSaying.getId() + " / " + wiseSaying.getAuthor() + " / " + wiseSaying.getContent());
         }
     }
 
